@@ -13,24 +13,20 @@ LOGIN_URL = "/login/"
 DASHBOARD_URL = "/dashboard/"
 
 
-@csrf_protect
 def home(request):
     posts = Post.objects.all()
 
     return render(request, "blog/home.html", {"posts": posts})
 
 
-@csrf_protect
 def about(request):
     return render(request, "blog/about.html")
 
 
-@csrf_protect
 def contact(request):
     return render(request, "blog/contact.html")
 
 
-@csrf_protect
 def dashboard(request):
     if request.user.is_authenticated:
         posts = Post.objects.all()
@@ -39,7 +35,6 @@ def dashboard(request):
         return HttpResponseRedirect(LOGIN_URL)
 
 
-@csrf_protect
 def user_signup(request):
     if request.method == "POST":
         fm = signupform(request.POST)
@@ -57,7 +52,6 @@ def user_signup(request):
     return render(request, "blog/signup.html", {"form": fm})
 
 
-@csrf_protect
 def user_login(request):
     if not request.user.is_authenticated:
         if request.method == "POST":
@@ -79,13 +73,11 @@ def user_login(request):
         return HttpResponseRedirect(DASHBOARD_URL)
 
 
-@csrf_protect
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect("/")
 
 
-@csrf_protect
 def addpost(request):
     if request.user.is_authenticated:
         if request.method == "POST":
@@ -103,7 +95,6 @@ def addpost(request):
         return HttpResponseRedirect(LOGIN_URL)
 
 
-@csrf_protect
 def updatepost(request, id):
     if request.user.is_authenticated:
         if request.method == "POST":
@@ -120,7 +111,6 @@ def updatepost(request, id):
         return HttpResponseRedirect(LOGIN_URL)
 
 
-@csrf_protect
 def deletepost(request, id):
     if request.user.is_authenticated:
         if request.method == "POST":
@@ -132,7 +122,6 @@ def deletepost(request, id):
         return HttpResponseRedirect(LOGIN_URL)
 
 
-@csrf_protect
 def changepass(request):
     if request.method == "POST":
         fm = PasswordChangeForm(user=request.user, data=request.POST)
