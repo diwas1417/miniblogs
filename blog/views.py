@@ -5,25 +5,30 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from .models import Post
 from django.contrib.auth.models import Group
+from django.views.decorators.csrf import csrf_protect
+
 
 # Create your views here.
 LOGIN_URL = "/login/"
-
-
+DASHBOARD_URL = "/dashboard/"
+@csrf_protect
 def home(request):
     posts = Post.objects.all()
 
     return render(request, "blog/home.html", {"posts": posts})
 
 
+@csrf_protect
 def about(request):
     return render(request, "blog/about.html")
 
 
+@csrf_protect
 def contact(request):
     return render(request, "blog/contact.html")
 
 
+@csrf_protect
 def dashboard(request):
     if request.user.is_authenticated:
         posts = Post.objects.all()
@@ -32,6 +37,7 @@ def dashboard(request):
         return HttpResponseRedirect(LOGIN_URL)
 
 
+@csrf_protect
 def user_signup(request):
     if request.method == "POST":
         fm = signupform(request.POST)
@@ -49,6 +55,7 @@ def user_signup(request):
     return render(request, "blog/signup.html", {"form": fm})
 
 
+@csrf_protect
 def user_login(request):
     if not request.user.is_authenticated:
         if request.method == "POST":
@@ -60,21 +67,23 @@ def user_login(request):
                 if user is not None:
                     login(request, user)
                     messages.success(request, "la moj gara")
-                    return HttpResponseRedirect("/dashboard/")
+                    return HttpResponseRedirect(DASHBOARD_URL)
 
         else:
             fm = loginform()
 
         return render(request, "blog/login.html", {"form": fm})
     else:
-        return HttpResponseRedirect("/dashboard/")
+        return HttpResponseRedirect(DASHBOARD_URL)
 
 
+@csrf_protect
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect("/")
 
 
+@csrf_protect
 def addpost(request):
     if request.user.is_authenticated:
         if request.method == "POST":
@@ -92,6 +101,7 @@ def addpost(request):
         return HttpResponseRedirect(LOGIN_URL)
 
 
+@csrf_protect
 def updatepost(request, id):
     if request.user.is_authenticated:
         if request.method == "POST":
@@ -108,24 +118,26 @@ def updatepost(request, id):
         return HttpResponseRedirect(LOGIN_URL)
 
 
+@csrf_protect
 def deletepost(request, id):
     if request.user.is_authenticated:
         if request.method == "POST":
             pi = Post.objects.get(pk=id)
             pi.delete()
 
-        return HttpResponseRedirect("/dashboard/")
+        return HttpResponseRedirect(DASHBOARD_URL)
     else:
         return HttpResponseRedirect(LOGIN_URL)
 
 
+@csrf_protect
 def changepass(request):
     if request.method == "POST":
         fm = PasswordChangeForm(user=request.user, data=request.POST)
         if fm.is_valid():
             fm.save()
             update_session_auth_hash(request, fm.user)
-            return HttpResponseRedirect("/dashboard/")
+            return HttpResponseRedirect(DASHBOARD_URL)
 
     else:
         fm = PasswordChangeForm(user=request.user)
