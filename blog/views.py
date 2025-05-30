@@ -44,7 +44,7 @@ def dashboard(request):
 
 
 @csrf_protect
-@require_http_methods(["GET", "POST"])  # Explicitly allow GET/POST
+@require_http_methods(["GET", "POST"])
 def user_signup(request):
     if request.method == "POST":
         fm = signupform(request.POST)
@@ -62,8 +62,8 @@ def user_signup(request):
     return render(request, "blog/signup.html", {"form": fm})
 
 
-@require_http_methods(["GET", "POST"])
 @csrf_protect
+@require_http_methods(["GET", "POST"])
 def user_login(request):
     if not request.user.is_authenticated:
         if request.method == "POST":
@@ -92,8 +92,8 @@ def user_logout(request):
 
 
 @login_required
-@require_http_methods(["GET", "POST"])
 @csrf_protect
+@require_http_methods(["GET", "POST"])
 def addpost(request):
     if request.user.is_authenticated:
         if request.method == "POST":
@@ -112,8 +112,8 @@ def addpost(request):
 
 
 @login_required
-@require_http_methods(["GET", "POST"])
 @csrf_protect
+@require_http_methods(["GET", "POST"])
 def updatepost(request, id):
     if request.user.is_authenticated:
         if request.method == "POST":
@@ -144,8 +144,8 @@ def deletepost(request, id):
 
 
 @login_required
-@require_http_methods(["GET", "POST"])
 @csrf_protect
+@require_http_methods(["GET", "POST"])
 def changepass(request):
     if request.method == "POST":
         fm = PasswordChangeForm(user=request.user, data=request.POST)
