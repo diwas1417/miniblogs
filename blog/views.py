@@ -100,19 +100,24 @@ def addpost(request):
     return render(request, "blog/post.html", {"form": fm})
 
 
+# This view allows GET for form display and POST for form submission.
+# CSRF protection and login required are enforced to ensure safe handling.
 @csrf_protect
 @login_required
 @require_http_methods(["GET", "POST"])
-def updatepost(request, id):
-    pi = Post.objects.get(pk=id)
+def addpost(request):
     if request.method == "POST":
-        fm = PostForm(request.POST, instance=pi)
+        fm = PostForm(request.POST)
         if fm.is_valid():
-            fm.save()
+            title = fm.cleaned_data["title"]
+            desc = fm.cleaned_data["desc"]
+            pst = Post(title=title, desc=desc)
+            pst.save()
+            messages.success(request, "Post added successfully.")
+            return HttpResponseRedirect(DASHBOARD_URL)
     else:
-        fm = PostForm(instance=pi)
-
-    return render(request, "blog/updatepost.html", {"form": fm})
+        fm = PostForm()
+    return render(request, "blog/post.html", {"form": fm})
 
 
 @csrf_protect
@@ -124,6 +129,8 @@ def deletepost(request, id):
     return HttpResponseRedirect(DASHBOARD_URL)
 
 
+# This view allows authenticated users to change their password via POST.
+# CSRF protection and method restriction ensure this is secure.
 @csrf_protect
 @login_required
 @require_http_methods(["GET", "POST"])
@@ -133,6 +140,7 @@ def changepass(request):
         if fm.is_valid():
             fm.save()
             update_session_auth_hash(request, fm.user)
+            messages.success(request, "Password changed successfully.")
             return HttpResponseRedirect(DASHBOARD_URL)
     else:
         fm = PasswordChangeForm(user=request.user)
