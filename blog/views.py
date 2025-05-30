@@ -43,7 +43,6 @@ def dashboard(request):
         return HttpResponseRedirect(LOGIN_URL)
 
 
-
 @csrf_protect
 @require_http_methods(["GET", "POST"])  # Explicitly allow GET/POST
 def user_signup(request):
@@ -94,6 +93,7 @@ def user_logout(request):
 
 @login_required
 @require_http_methods(["GET", "POST"])
+@csrf_protect
 def addpost(request):
     if request.user.is_authenticated:
         if request.method == "POST":
@@ -113,6 +113,7 @@ def addpost(request):
 
 @login_required
 @require_http_methods(["GET", "POST"])
+@csrf_protect
 def updatepost(request, id):
     if request.user.is_authenticated:
         if request.method == "POST":
@@ -144,6 +145,7 @@ def deletepost(request, id):
 
 @login_required
 @require_http_methods(["GET", "POST"])
+@csrf_protect
 def changepass(request):
     if request.method == "POST":
         fm = PasswordChangeForm(user=request.user, data=request.POST)
