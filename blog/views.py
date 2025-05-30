@@ -43,8 +43,9 @@ def dashboard(request):
         return HttpResponseRedirect(LOGIN_URL)
 
 
+
 @csrf_protect
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET", "POST"])  # Explicitly allow GET/POST
 def user_signup(request):
     if request.method == "POST":
         fm = signupform(request.POST)
@@ -129,7 +130,7 @@ def updatepost(request, id):
 
 
 @login_required
-@require_POST
+@require_POST  # Only allow POST (no GET)
 def deletepost(request, id):
     if request.user.is_authenticated:
         if request.method == "POST":
