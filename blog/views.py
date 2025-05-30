@@ -6,27 +6,35 @@ from django.contrib.auth import authenticate, login, logout, update_session_auth
 from .models import Post
 from django.contrib.auth.models import Group
 from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.http import require_GET, require_POST
 
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
 
 # Create your views here.
 LOGIN_URL = "/login/"
 DASHBOARD_URL = "/dashboard/"
 
 
+@require_GET
 def home(request):
     posts = Post.objects.all()
 
     return render(request, "blog/home.html", {"posts": posts})
 
 
+@require_GET
 def about(request):
     return render(request, "blog/about.html")
 
 
+@require_GET
 def contact(request):
     return render(request, "blog/contact.html")
 
 
+@login_required
+@require_GET
 def dashboard(request):
     if request.user.is_authenticated:
         posts = Post.objects.all()
@@ -35,6 +43,8 @@ def dashboard(request):
         return HttpResponseRedirect(LOGIN_URL)
 
 
+@csrf_protect
+@require_http_methods(["GET", "POST"])
 def user_signup(request):
     if request.method == "POST":
         fm = signupform(request.POST)
@@ -52,6 +62,8 @@ def user_signup(request):
     return render(request, "blog/signup.html", {"form": fm})
 
 
+@require_http_methods(["GET", "POST"])
+@csrf_protect
 def user_login(request):
     if not request.user.is_authenticated:
         if request.method == "POST":
@@ -73,11 +85,14 @@ def user_login(request):
         return HttpResponseRedirect(DASHBOARD_URL)
 
 
+@require_POST
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect("/")
 
 
+@login_required
+@require_http_methods(["GET", "POST"])
 def addpost(request):
     if request.user.is_authenticated:
         if request.method == "POST":
@@ -95,6 +110,8 @@ def addpost(request):
         return HttpResponseRedirect(LOGIN_URL)
 
 
+@login_required
+@require_http_methods(["GET", "POST"])
 def updatepost(request, id):
     if request.user.is_authenticated:
         if request.method == "POST":
@@ -111,6 +128,8 @@ def updatepost(request, id):
         return HttpResponseRedirect(LOGIN_URL)
 
 
+@login_required
+@require_POST
 def deletepost(request, id):
     if request.user.is_authenticated:
         if request.method == "POST":
@@ -122,6 +141,8 @@ def deletepost(request, id):
         return HttpResponseRedirect(LOGIN_URL)
 
 
+@login_required
+@require_http_methods(["GET", "POST"])
 def changepass(request):
     if request.method == "POST":
         fm = PasswordChangeForm(user=request.user, data=request.POST)
