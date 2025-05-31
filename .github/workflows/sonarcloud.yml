@@ -31,6 +31,9 @@ jobs:
           coverage run manage.py test
           coverage xml
 
+      - name: Print coverage file (debugging)
+        run: cat coverage.xml
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
@@ -40,3 +43,4 @@ jobs:
             -Dsonar.projectKey=diwas1417_miniblogs
             -Dsonar.organization=diwas1417
             -Dsonar.python.coverage.reportPaths=coverage.xml
+            -Dsonar.sources=blog,miniblog
