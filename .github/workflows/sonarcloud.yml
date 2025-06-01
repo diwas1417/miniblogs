@@ -1,9 +1,9 @@
-name: SonarCloud
+name: SonarCloud Scan
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    types: [ opened, synchronize, reopened ]
+    types: [opened, synchronize, reopened]
 
 jobs:
   sonarcloud:
@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Needed for proper analysis
+          fetch-depth: 0  # Required for proper analysis
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -35,7 +35,6 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v5.0.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Important for PR analysis
         with:
           args: >
             -Dsonar.projectKey=diwas1417_miniblogs
