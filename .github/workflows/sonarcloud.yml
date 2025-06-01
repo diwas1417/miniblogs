@@ -27,6 +27,8 @@ jobs:
           pip install coverage
 
       - name: Run tests with coverage
+        env:
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}  # Load secret key
         run: |
           coverage run manage.py test
           coverage xml
