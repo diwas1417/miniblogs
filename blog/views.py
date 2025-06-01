@@ -1,3 +1,8 @@
+"""
+views.py
+Handles HTTP requests and routes for blog views and user authentication.
+"""
+
 from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import render, redirect, HttpResponseRedirect
 from .forms import loginform, signupform, PostForm
@@ -18,6 +23,7 @@ DASHBOARD_URL = "/dashboard/"
 
 @require_GET
 def home(request):
+    """View handling the home page."""
     posts = Post.objects.all()
 
     return render(request, "blog/home.html", {"posts": posts})
@@ -36,6 +42,7 @@ def contact(request):
 @login_required
 @require_GET
 def dashboard(request):
+    """View handling the dashboard for authenticated users."""
     if request.user.is_authenticated:
         posts = Post.objects.all()
         return render(request, "blog/dashboard.html", {"posts": posts})
